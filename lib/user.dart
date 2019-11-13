@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easyparking/city.dart';
+import 'package:flutter/src/rendering/box.dart';
 
 class User extends StatelessWidget {
 
@@ -105,8 +106,21 @@ class User extends StatelessWidget {
                       ),
                     ),
                   ],
+            ),
+            new Row(
+              children: <Widget>[
+                Expanded(
+                  child: SizedBox(
+                    height: 200.0,
+                    child: new ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _allCities.length,
+                      itemBuilder: _getItemUI,
+                    ),
+                  ),
                 ),
-  
+              ],
+            )
           ],
         ),
       ),
