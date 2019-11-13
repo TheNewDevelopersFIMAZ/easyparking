@@ -4,15 +4,15 @@ import 'package:qr_mobile_vision/qr_camera.dart';
 
 void main() {
   debugPaintSizeEnabled = false;
-  runApp(new HomePage());
+  runApp(new ScannerQr());
 }
 
-class HomePage extends StatefulWidget {
+class ScannerQr extends StatefulWidget {
   @override
   HomeState createState() => new HomeState();
 }
 
-class HomeState extends State<HomePage> {
+class HomeState extends State<ScannerQr> {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(

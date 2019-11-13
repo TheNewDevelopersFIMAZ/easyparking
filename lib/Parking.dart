@@ -1,61 +1,33 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class Parking extends StatelessWidget {
+//void main() => runApp(MyApp());
 
-  static const String _title = 'Parking';
+class Parking extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<Parking> {
+  GoogleMapController mapController;
+
+  final LatLng _center = const LatLng(23.2267, -106.408);
+
+  void _onMapCreated(GoogleMapController controller) {
+    mapController = controller;
+  }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: _title,
-      home: ParkingState(),
-    );
-  }
-}
-
-class ParkingState extends StatefulWidget {
-  ParkingState({Key key}) : super(key: key);
-
-  @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
-}
-
-
-class _MyStatefulWidgetState extends State<ParkingState> {
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
-  Completer<GoogleMapController> _controller = Completer();
-
-
-void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
-}
-
-@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-          title: Text('Maps in Flutter'),
-          centerTitle: true,
-        ),
-      body: new Center(
-        child: new Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            new Expanded(
-              child: GoogleMap(  
-              mapType: MapType.hybrid,
-              initialCameraPosition: _kGooglePlex,
-              onMapCreated: _onMapCreated,
-            ),
-            ),
-          ],
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        body: GoogleMap(
+          onMapCreated: _onMapCreated,
+          initialCameraPosition: CameraPosition(
+            target: _center,
+            zoom: 13.0,
+          ),
         ),
       ),
     );

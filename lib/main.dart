@@ -1,6 +1,8 @@
 import 'package:easyparking/Parking.dart';
 import 'package:easyparking/Scanner_QR.dart';
+import 'package:easyparking/user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() => runApp(MyApp());
 
@@ -32,12 +34,9 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static List<Widget> _widgetOptions = <Widget>[
-    new HomePage(),
-    new ParkingState(),
-    Text(
-      'Users',
-      style: optionStyle,
-    ),
+    new ScannerQr(),
+    new Parking(),
+    new User(),
   ];
 
   void _onItemTapped(int index) {
@@ -48,6 +47,10 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+    ]);
     return Scaffold(
       appBar: AppBar(
         title: const Text('EasyParking'),

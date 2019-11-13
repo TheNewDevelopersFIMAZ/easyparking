@@ -24,9 +24,14 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
   qr_mobile_vision: ^0.1.0
-  google_maps_flutter: ^0.5.5
+  google_maps_flutter: ^0.5.11
+  http: ^0.12.0+1
+  json_serializable: ^2.0.2
 
+# Add the following three lines
 dev_dependencies:
+  pedantic: ^1.4.0
+  build_runner: ^1.2.7
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: "^0.7.4"
@@ -42,6 +47,11 @@ flutter_icons:
 
 # The following section is specific to Flutter.
 flutter:
+  assets:
+    - images/top_user.png
+    - images/top_users.png
+    - images/user_logo.png
+    - images/user_perfil.jpg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
