@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:easyparking/city.dart';
-import 'package:flutter/src/rendering/box.dart';
+import 'package:easyparking/pages/city.dart';
+//import 'package:flutter/src/rendering/box.dart';
 
 class User extends StatelessWidget {
 
 
   final List<City> _allCities = City.allCities();
   void suma() {
-    int i = 1;
+    int entero = 1;
   }
   @override
   Widget build(BuildContext context) {

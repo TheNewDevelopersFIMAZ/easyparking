@@ -1,85 +1,37 @@
-import 'package:easyparking/Parking.dart';
-import 'package:easyparking/Scanner_QR.dart';
-import 'package:easyparking/user.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'pages/login.dart';
+import 'pages/sign_up.dart';
+import 'pages/home.dart';
+import 'pages/splash.dart';
+import 'providers/me.dart';
 
 void main() => runApp(MyApp());
 
-/// This Widget is the main application widget.
 class MyApp extends StatelessWidget {
-  static const String _title = 'EasyParking';
-
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: _title,
-      home: MyStatefulWidget(),
-      debugShowCheckedModeBanner: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          builder: (_)=>Me(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: SplashPage(),
+        routes: {
+          "splash": (context) => SplashPage(),
+          "login": (context) => LoginPage(),
+          "singup": (context) => SingUpPage(),
+          "home": (context) => HomePage(),
+        },
+      ),
     );
   }
 }
-
-class MyStatefulWidget extends StatefulWidget {
-  MyStatefulWidget({Key key}) : super(key: key);
-
-  @override
-  _MyStatefulWidgetState createState() => _MyStatefulWidgetState();
-}
-
-class _MyStatefulWidgetState extends State<MyStatefulWidget> {
-
-  int _selectedIndex = 0;
-  String _counter, _value = "";
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static List<Widget> _widgetOptions = <Widget>[
-    new ScannerQr(),
-    new Parking(),
-    new User(),
-  ];
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown,
-    ]);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('EasyParking'),
-      ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.crop_free),
-            title: Text('Scanner'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.location_on),
-            title: Text('Parkings'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            title: Text('Person'),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        onTap: _onItemTapped,
-      ),
-    );
-  }
-
-  
-}
-
