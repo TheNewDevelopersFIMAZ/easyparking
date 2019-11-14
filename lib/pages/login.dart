@@ -79,6 +79,13 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SingleChildScrollView(
                 child: Container(
+                  padding: 
+                    EdgeInsets.only(
+                      //top: 20,
+                      //bottom: 18,
+                      right: 30,
+                      left:30
+                    ),
                   width: size.width,
                   height: size.height,
                   child: SafeArea(
@@ -92,20 +99,25 @@ class _LoginPageState extends State<LoginPage> {
                               height: responsive.wp(20),
                               margin: EdgeInsets.only(top: size.width * 0.3),
                               decoration: BoxDecoration(
+                                image: new DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: new AssetImage("images/user.png")
+                                  ),
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(15),
                                   boxShadow: [
                                     BoxShadow(
                                         color: Colors.black26, blurRadius: 35)
                                   ]),
+                                  
                             ),
                             SizedBox(height: responsive.hp(4)),
                             Text(
-                              "Bienvenido\nde nuevo.",
+                              "Bienvenido.",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: responsive.ip(2),
-                                  fontWeight: FontWeight.w300),
+                                  fontSize: responsive.ip(3),
+                                  fontWeight: FontWeight.bold),
                             )
                           ],
                         ),
@@ -121,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                                   child: Column(
                                     children: <Widget>[
                                       InputText(
-                                          label: "EMAIL ADDRESS",
+                                          label: "Correo Electronico",
                                           inputType: TextInputType.emailAddress,
                                           fontSize: responsive.ip(1.8),
                                           validator: (String text) {
@@ -133,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                                           }),
                                       SizedBox(height: responsive.hp(3)),
                                       InputText(
-                                        label: "PASSWORD",
+                                        label: "Contraseña",
                                         isSecure: true,
                                         fontSize: responsive.ip(1.8),
                                         validator: (String text) {
@@ -160,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.lightBlue,
                                 borderRadius: BorderRadius.circular(4),
                                 onPressed: () => _submit(),
-                                child: Text("Sign in",
+                                child: Text("Iniciar Sesión",
                                     style: TextStyle(
                                         fontSize: responsive.ip(2.5))),
                               ),
@@ -169,14 +181,14 @@ class _LoginPageState extends State<LoginPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text("New to Friendly Desi?",
+                                Text("Quieres crear una nueva cuenta?",
                                     style: TextStyle(
                                         fontSize: responsive.ip(1.8),
                                         color: Colors.black54)),
                                 CupertinoButton(
                                   onPressed: () =>
                                       Navigator.pushNamed(context, "singup"),
-                                  child: Text("Sign Up",
+                                  child: Text("Crear Cuenta",
                                       style: TextStyle(
                                           fontSize: responsive.ip(1.8),
                                           color: Colors.lightBlue[900])),

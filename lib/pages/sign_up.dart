@@ -92,6 +92,10 @@ class _SingUpPageState extends State<SingUpPage> {
                               height: responsive.wp(20),
                               margin: EdgeInsets.only(top: size.width * 0.3),
                               decoration: BoxDecoration(
+                                image: new DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: new AssetImage("images/user.png")
+                                  ),
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(15),
                                   boxShadow: [
@@ -101,10 +105,10 @@ class _SingUpPageState extends State<SingUpPage> {
                             ),
                             SizedBox(height: responsive.hp(3)),
                             Text(
-                              "Hello again.\nWelcome back",
+                              "Crea una\nNueva cuenta",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: responsive.ip(1.9), fontWeight: FontWeight.w300),
+                                  fontSize: responsive.ip(2.5), fontWeight: FontWeight.bold),
                             )
                           ],
                         ),
@@ -112,15 +116,15 @@ class _SingUpPageState extends State<SingUpPage> {
                           children: <Widget>[
                             ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: 350,
-                                minWidth: 350,
+                                maxWidth: 300,
+                                minWidth: 300,
                               ),
                               child: Form(
                                   key: _formKey,
                                   child: Column(
                                     children: <Widget>[
                                       InputText(
-                                          label: "USERNAME",
+                                          label: "Nombre de Usuario",
                                           fontSize: responsive.ip(1.8),
                                           validator: (String text) {
                                             if (RegExp(r'^[a-zA-Z0-9]+$')
@@ -132,7 +136,7 @@ class _SingUpPageState extends State<SingUpPage> {
                                           }),
                                       SizedBox(height: responsive.hp(1.5)),
                                       InputText(
-                                          label: "EMAIL ADDRESS",
+                                          label: "Correo Electronico",
                                           fontSize: responsive.ip(1.8),
                                           inputType: TextInputType.emailAddress,
                                           validator: (String text) {
@@ -144,7 +148,7 @@ class _SingUpPageState extends State<SingUpPage> {
                                           }),
                                       SizedBox(height: responsive.hp(1.5)),
                                       InputText(
-                                        label: "PASSWORD",
+                                        label: "Contraseña",
                                         fontSize: responsive.ip(1.8),
                                         isSecure: true,
                                         validator: (String text) {
@@ -162,15 +166,15 @@ class _SingUpPageState extends State<SingUpPage> {
                             SizedBox(height: responsive.ip(5)),
                             ConstrainedBox(
                               constraints: BoxConstraints(
-                                maxWidth: 350,
-                                minWidth: 350,
+                                maxWidth: 300,
+                                minWidth: 300,
                               ),
                               child: CupertinoButton(
                                 padding: EdgeInsets.symmetric(vertical: responsive.ip(1.9)),
                                 color: Colors.lightBlue,
                                 borderRadius: BorderRadius.circular(4),
                                 onPressed: () => _submit(),
-                                child: Text("Sign Up",
+                                child: Text("Crear Cuenta",
                                     style: TextStyle(fontSize: responsive.ip(1.9))),
                               ),
                             ),
@@ -178,12 +182,12 @@ class _SingUpPageState extends State<SingUpPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Text("Already have an account?",
+                                Text("Ya tienes una cuenta?",
                                     style: TextStyle(
                                         fontSize: responsive.ip(1.7), color: Colors.black54)),
                                 CupertinoButton(
                                   onPressed: () => Navigator.pop(context),
-                                  child: Text("Sign In",
+                                  child: Text("Iniciar Sesión",
                                       style: TextStyle(
                                           fontSize: responsive.ip(1.7),
                                           color: Colors.lightBlue[900])),
