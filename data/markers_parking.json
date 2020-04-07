@@ -1,0 +1,29 @@
+{
+    "nombreApp" : "easyparking",
+    "markers" : [
+        {
+            "id" : "galeriasid",
+            "latitud" : "23.2780268",
+            "longitud": "-106.4509894",
+            "lugar": "Plaza Galerias"
+        }, 
+        {
+            "id" : "acayaid",
+            "latitud" : "23.2719542",
+            "longitud": "-106.4198372",
+            "lugar": "Plaza Acaya"
+        },
+        {
+            "id" : "santarosaid",
+            "latitud" : "23.2582824",
+            "longitud": "-106.408681",
+            "lugar": "Soriana Santarosa"
+        },
+        {
+            "id" : "fimazid",
+            "latitud" : "23.2314508",
+            "longitud": "-106.42872",
+            "lugar": "FIMAZ UAS"
+        }
+    ]
+}

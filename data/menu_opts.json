@@ -1,0 +1,32 @@
+{
+    "nombreApp" : "easyparking",
+    "rutas" : [
+        {
+            "fecha" : "09:32 AM 23/DIC/19",
+            "tiempo" : "#4, 1:45m",
+            "lugar": "Soriana Santarosa",
+            "cajon": "#",
+            "costo": "$",
+            "estado": "-",
+            "image":"https://img10.naventcdn.com/avisos/18/00/55/46/39/50/1200x1200/135418734.jpg"
+        },
+        {
+            "fecha" : "12:32 PM 25/DIC/19",
+            "tiempo" : "#18, 1:32m",
+            "lugar": "Plaza Galerias",
+            "cajon": "#",
+            "costo": "$",
+            "estado": "-",
+            "image": "https://gomazatlan.com/wp-content/uploads/2018/05/THING-GaleriasMazatlan-CVR-1190-1.jpg"
+        },
+        {
+            "fecha" : "09:32 PM 26/DIC/19",
+            "tiempo" : "#23, 3:24m",
+            "lugar": "Gran Plaza",
+            "cajon": "#",
+            "costo": "$",
+            "estado": "-",
+            "image": "https://cafenegroportal.com/wp-content/uploads/2014/01/mujer-gran-plaza-mazatlan.jpg"
+        }
+    ]
+}

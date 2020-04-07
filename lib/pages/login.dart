@@ -1,9 +1,13 @@
+import 'package:easyparking/models/usuario_model.dart';
+import 'package:easyparking/pages/home.dart';
+import 'package:easyparking/pages/SignUp.dart';
+import 'package:easyparking/providers/user_pro.dart';
+import 'package:easyparking/providers/user_provider.dart';
+import 'package:easyparking/user_preferences/user_preferences.dart';
+import 'package:easyparking/utils/dialogs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:easyparking/widgets/circle.dart';
-import 'package:easyparking/widgets/input_text.dart';
-import 'package:easyparking/api/auth_api.dart';
 import 'package:easyparking/utils/responsive.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,10 +16,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final UsuariosModel usuario = new UsuariosModel();
+  final UserProvider usuarioProvider = new UserProvider();
+  PreferenciasUsuario usuariopre = new PreferenciasUsuario();
   final _formKey = GlobalKey<FormState>();
-  final _authAPI = AuthAPI();
-  var _email = '', _password = '';
-  var _isFetching = false;
+  String _email = '', _password = '';
+  bool _isFetching = false; 
 
   @override
   void initState() {
@@ -24,25 +30,38 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _submit() async {
-    if (_isFetching) return;
-
-    final isValid = _formKey.currentState.validate();
-
-    if (isValid) {
+    final auth = Providers.of(context).auth;
+    
+    if (_formKey.currentState.validate()) {
       setState(() {
         _isFetching = true;
       });
-      final isOk =
-      await _authAPI.login(context, email: _email, password: _password);
-
+      try {
+        _formKey.currentState.save();
+        String userId = await auth.signInWithEmailAndPassword(
+              usuario.email,
+              usuario.password
+            );
+        print('Signed in $userId');
+        usuariopre.token = userId;
+        usuariopre.selected = false;
+        usuariopre.startCronometer = true;
+        usuariopre.cronometroTime = "00:00:00";
+        usuariopre.selectedLocation = "";
+        usuariopre.selectedNumber = "";
+        usuariopre.selectedSite = "";
+        Navigator.pushAndRemoveUntil(context, MaterialPageRoute( builder: (context) => HomePage() ), ModalRoute.withName("/home"));
+      
+      } catch (e) {
+        print(e);
+        Dialogs.alert(context, title: "Error al iniciar sesión", message: "El correo o la contraseña son incorrectos");
+      }
+      
+      print(usuariopre.token);
       setState(() {
         _isFetching = false;
-      });
-
-      if (isOk) {
-        print("LOGIN OK");
-        Navigator.pushNamedAndRemoveUntil(context, 'splash', (_) => false);
-      }
+        });
+      
     }
   }
 
@@ -59,146 +78,208 @@ class _LoginPageState extends State<LoginPage> {
         child: Container(
           width: size.width,
           height: size.height,
+          decoration: BoxDecoration(
+            color: Colors.cyan
+          ),
           child: Stack(
             children: <Widget>[
-              Positioned(
-                right: -size.width * 0.22,
-                top: -size.width * 0.36,
-                child: Circle(
-                  radius: size.width * 0.45,
-                  colors: [Colors.lightBlue[400], Colors.lightBlue],
-                ),
-              ),
-              Positioned(
-                left: -size.width * 0.15,
-                top: -size.width * 0.34,
-                child: Circle(
-                  radius: size.width * 0.35,
-                  colors: [Colors.tealAccent, Colors.cyan],
-                ),
-              ),
               SingleChildScrollView(
                 child: Container(
                   padding: 
                     EdgeInsets.only(
-                      //top: 20,
-                      //bottom: 18,
-                      right: 30,
-                      left:30
+                      right: 20,
+                      left:20
                     ),
-                  width: size.width,
-                  height: size.height,
                   child: SafeArea(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Column(
                           children: <Widget>[
-                            Container(
-                              width: responsive.wp(20),
-                              height: responsive.wp(20),
-                              margin: EdgeInsets.only(top: size.width * 0.3),
-                              decoration: BoxDecoration(
-                                image: new DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image: new AssetImage("images/user.png")
-                                  ),
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color: Colors.black26, blurRadius: 35)
-                                  ]),
-                                  
-                            ),
-                            SizedBox(height: responsive.hp(4)),
+                            SizedBox(height: responsive.hp(6)),
                             Text(
-                              "Bienvenido.",
+                              "Estacionando-Ando",
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: responsive.ip(3),
-                                  fontWeight: FontWeight.bold),
+                                  fontSize: responsive.ip(3.5),
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white
+                              ),
                             )
                           ],
                         ),
-                        Column(
-                          children: <Widget>[
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxWidth: 350,
-                                minWidth: 350,
+                        Container(
+                          //color: Colors.black,
+                          margin: EdgeInsets.symmetric(vertical: size.width * 0.07),
+                          padding: EdgeInsets.only(left: size.width * 0.07, right: size.width * 0.07, top: size.width * 0.09),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [BoxShadow(
+                              color: Colors.black12, 
+                              blurRadius: 20
+                            )],
+                            borderRadius: BorderRadius.all(Radius.circular(5))
+                          ),
+                          child: Column(
+                            children: <Widget>[
+                              Center(
+                                child: Container(
+                                  width: size.width*0.5,
+                                  height: size.height*0.2,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage("images/logo_inicio.png") 
+                                    ),
+                                  )
+                                )
                               ),
-                              child: Form(
-                                  key: _formKey,
-                                  child: Column(
-                                    children: <Widget>[
-                                      InputText(
-                                          label: "Correo Electronico",
-                                          inputType: TextInputType.emailAddress,
-                                          fontSize: responsive.ip(1.8),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 350,
+                                  minWidth: 350,
+                                ),
+                                child: Form(
+                                    key: _formKey,
+                                    child: Column(
+                                      children: <Widget>[
+                                        SizedBox(height: responsive.hp(1.5)),
+                                        TextFormField(
+                                          decoration: InputDecoration(
+                                            labelText: "Correo Electronico",
+                                            labelStyle: TextStyle(fontSize: responsive.hp(2))
+                                          ),
+                                          onSaved: (value) => usuario.email = value,
+                                          keyboardType: TextInputType.emailAddress,
                                           validator: (String text) {
-                                            if (text.contains("@")) {
-                                              _email = text;
+                                            if (RegExp('^[_a-z0-9-]+(\\.[_a-z0-9-]+)*@[a-z0-9-]+(\\.[a-z0-9-]+)*(\\.[a-z]{2,4})').hasMatch(text)) {
+                                                _email = text;
+                                                return null;
+                                              }
+                                              return "Correo no valido";
+                                          }),
+                                        SizedBox(height: responsive.hp(1.5)),
+                                        TextFormField(
+                                          decoration: InputDecoration(
+                                            labelText: "Contraseña",
+                                            labelStyle: TextStyle(fontSize: responsive.hp(2))
+                                          ),
+                                          onSaved: (value) => usuario.password = value,
+                                          obscureText: true,
+                                          validator: (String text) {
+                                            if (text.isNotEmpty) {
+                                              _password = text;
                                               return null;
                                             }
-                                            return "Invalid Email";
-                                          }),
-                                      SizedBox(height: responsive.hp(3)),
-                                      InputText(
-                                        label: "Contraseña",
-                                        isSecure: true,
-                                        fontSize: responsive.ip(1.8),
-                                        validator: (String text) {
-                                          if (text.isNotEmpty &&
-                                              text.length > 5) {
-                                            _password = text;
-                                            return null;
-                                          }
-                                          return "Invalid password";
-                                        },
-                                      )
+                                            return "Contraseña no valida";
+                                          },
+                                        ),
+                                      ],
+                                    )),
+                              ),
+                              SizedBox(height: responsive.hp(4)),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 350,
+                                  minWidth: 350,
+                                ),
+                                child: CupertinoButton(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: responsive.ip(2)),
+                                  color: Colors.cyan,
+                                  borderRadius: BorderRadius.circular(4),
+                                  onPressed: () => _submit(),
+                                  child: Text("Iniciar Sesión",
+                                      style: TextStyle(
+                                          fontSize: responsive.ip(2.5))),
+                                ),
+                              ),/*
+                              SizedBox(height: responsive.hp(1)),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 350,
+                                  minWidth: 350,
+                                ),
+                                child: CupertinoButton(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: responsive.ip(2)),
+                                  color: Colors.redAccent[200],
+                                  borderRadius: BorderRadius.circular(4),
+                                  onPressed: () async {
+                                    try {
+                                      final _auth = Providers.of(context).auth;
+                                      final id = await _auth.signInWithGoogle();
+                                      print('signed in with google $id');
+                                    } catch (e) {
+                                      print(e);
+                                    }
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Icon(Entypo.google_),
+                                      SizedBox(width: responsive.hp(1)),
+                                      Text("Iniciar con Google",
+                                          style: TextStyle(
+                                              fontSize: responsive.ip(2.5))),
                                     ],
-                                  )),
-                            ),
-                            SizedBox(height: responsive.hp(4)),
-                            ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxWidth: 350,
-                                minWidth: 350,
+                                  ),
+                                ),
                               ),
-                              child: CupertinoButton(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: responsive.ip(2)),
-                                color: Colors.lightBlue,
-                                borderRadius: BorderRadius.circular(4),
-                                onPressed: () => _submit(),
-                                child: Text("Iniciar Sesión",
-                                    style: TextStyle(
-                                        fontSize: responsive.ip(2.5))),
-                              ),
-                            ),
-                            SizedBox(height: responsive.hp(2)),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Text("Quieres crear una nueva cuenta?",
-                                    style: TextStyle(
-                                        fontSize: responsive.ip(1.8),
-                                        color: Colors.black54)),
-                                CupertinoButton(
-                                  onPressed: () =>
-                                      Navigator.pushNamed(context, "singup"),
-                                  child: Text("Crear Cuenta",
+                              SizedBox(height: responsive.hp(1)),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: 350,
+                                  minWidth: 350,
+                                ),
+                                child: CupertinoButton(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: responsive.ip(2)),
+                                  color: Colors.blue,
+                                  borderRadius: BorderRadius.circular(4),
+                                  onPressed: () async {
+                                    try {
+                                      final _auth = Providers.of(context).auth;
+                                      final id = await _auth.signInWithFacebook();
+                                      print('signed in with facebook $id');
+                                    } catch (e) {
+                                      print(e);
+                                    }
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Icon(Entypo.facebook),
+                                      SizedBox(width: responsive.hp(1)),
+                                      Text("Iniciar con Facebook",
+                                          style: TextStyle(
+                                              fontSize: responsive.ip(2.5))),
+                                    ],
+                                  ),
+                                ),
+                              ),*/
+                              SizedBox(height: responsive.hp(2)),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text("¿Quieres crear una nueva cuenta?",
                                       style: TextStyle(
                                           fontSize: responsive.ip(1.8),
-                                          color: Colors.lightBlue[900])),
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: responsive.hp(5),
-                            )
-                          ],
+                                          color: Colors.black54)),
+                                  CupertinoButton(
+                                    onPressed: () =>
+                                        Navigator.pushReplacement(context, MaterialPageRoute(builder: ( context )=> SingUpPage())),
+                                    child: Text("Crear Cuenta",
+                                        style: TextStyle(
+                                            fontSize: responsive.ip(1.5),
+                                            color: Colors.cyan[500])),
+                                  )
+                                ],
+                              ),
+                              SizedBox(
+                                height: responsive.hp(5),
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),

@@ -1,152 +1,86 @@
-import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_facebook_login/flutter_facebook_login.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
-import 'package:meta/meta.dart' show required;
-import 'package:flutter/services.dart';
-import '../app_config.dart';
-import '../utils/dialogs.dart';
-import '../utils/session.dart';
+abstract class BaseAuth {
+  Stream<String> get onAuthStateChanged;
+  Future<String> signInWithEmailAndPassword(
+    String email,
+    String password,
+  );
+  Future<String> createUserWithEmailAndPassword(
+    String email,
+    String password,
+  );
 
-class AuthAPI {
-  final _session = Session();
+  Future<String> currentUser();
+  Future<void> signOut();
+  Future<String> signInWithGoogle();
+  Future<String> signInWithFacebook();
+} 
 
-  Future<bool> register(BuildContext context,
-      {@required String username,
-        @required String email,
-        @required String password}) async {
-    try {
-      final url = "${AppConfig.apiHost}/register";
+class Auth implements BaseAuth {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: [
+    'https://www.googleapis.com/auth/drive',
+  ],);
+  final FacebookLogin _facebookLogin = FacebookLogin();
 
-      final response = await http.post(url,
-          body: {"username": username, "email": email, "password": password});
+  @override
+  Stream<String> get onAuthStateChanged => _firebaseAuth.onAuthStateChanged.map(
+        (FirebaseUser user) => user?.uid,
+      );
 
-      final parsed = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        final token = parsed['token'] as String;
-        final expiresIn = parsed['expiresIn'] as int;
-
-        // save token
-        await _registerToken(token);
-        await _session.set(token, expiresIn);
-        return true;
-      } else if (response.statusCode == 500) {
-        throw PlatformException(code: "500", message: parsed['message']);
-      }
-
-      throw PlatformException(code: "201", message: "Error /register");
-    } on PlatformException catch (e) {
-      print("Error ${e.code}:${e.message}");
-      Dialogs.alert(context, title: "ERROR", message: e.message);
-      return false;
-    }
+  @override
+  Future<String> createUserWithEmailAndPassword(
+      String email, String password) async {
+    return (await _firebaseAuth.createUserWithEmailAndPassword(
+      email: email,
+      password: password, 
+    ))
+        .user
+        .uid;
   }
 
-  Future<bool> login(BuildContext context,
-      {@required String email, @required String password}) async {
-    try {
-      final url = "${AppConfig.apiHost}/login";
-
-      final response =
-      await http.post(url, body: {"email": email, "password": password});
-
-      final parsed = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        final token = parsed['token'] as String;
-        final expiresIn = parsed['expiresIn'] as int;
-
-        // save token
-
-        await _registerToken(token);
-
-        await _session.set(token, expiresIn);
-
-        return true;
-      } else if (response.statusCode == 500) {
-        throw PlatformException(code: "500", message: parsed['message']);
-      }
-
-      throw PlatformException(code: "201", message: "Error /login");
-    } on PlatformException catch (e) {
-      print("Error ${e.code}:${e.message}");
-      Dialogs.alert(context, title: "ERROR", message: e.message);
-      return false;
-    }
+  @override
+  Future<String> currentUser() async {
+    return (await _firebaseAuth.currentUser()).uid;
   }
 
-  _registerToken(String token) async {
-    try {
-      final url = "${AppConfig.apiHost}/tokens/register";
-
-      final response = await http.post(url, headers: {"token": token});
-
-      final parsed = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return;
-      } else if (response.statusCode == 500) {
-        throw PlatformException(code: "500", message: parsed['message']);
-      }
-
-      throw PlatformException(code: "201", message: "Error /tokens/register");
-    } on PlatformException catch (e) {
-      print("Error ${e.code}:${e.message}");
-    }
+  @override
+  Future<String> signInWithEmailAndPassword(
+      String email, String password) async {
+    return (await _firebaseAuth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    ))
+        .user
+        .uid;
   }
 
-  Future<dynamic> _refreshToken(String expiredToken) async {
-    try {
-      final url = "${AppConfig.apiHost}/tokens/refresh";
-
-      final response = await http.post(url, headers: {"token": expiredToken});
-
-      final parsed = jsonDecode(response.body);
-
-      if (response.statusCode == 200) {
-        return parsed;
-      } else if (response.statusCode == 500) {
-        throw PlatformException(code: "500", message: parsed['message']);
-      }
-
-      throw PlatformException(code: "201", message: "Error /tokens/refresh");
-    } on PlatformException catch (e) {
-      print("Error ${e.code}:${e.message}");
-      return null;
-    }
+  @override
+  Future<String> signInWithGoogle() async {
+    final GoogleSignInAccount account = await _googleSignIn.signIn();
+    final GoogleSignInAuthentication _auth = await account.authentication;
+    final AuthCredential credential = GoogleAuthProvider.getCredential(
+      accessToken: _auth.accessToken,
+      idToken: _auth.idToken,
+    );
+    return (await _firebaseAuth.signInWithCredential(credential)).user.uid;
   }
 
-  Future<String> getAccessToken() async {
-    try {
-      final result = await _session.get();
-      if (result != null) {
-        final token = result['token'] as String;
-        final expiresIn = result['expiresIn'] as int;
-        final createdAt = DateTime.parse(result['createdAt']);
-        final currentDate = DateTime.now();
+  @override
+  Future<void> signOut() {
+    return _firebaseAuth.signOut();
+  }
 
-        final diff = currentDate.difference(createdAt).inSeconds;
-        if (expiresIn - diff >= 60) {
-          print("token is alive");
-          return token;
-        }
+  @override
+  Future<String> signInWithFacebook() async {
+    final result = await _facebookLogin.logIn(['email']);
 
-        // refresh
-
-        final newData = await _refreshToken(token);
-        if (newData != null) {
-          print("refresh token");
-          final newToken = newData['token'];
-          final newExpiresIn = newData['expiresIn'];
-          await _session.set(newToken, newExpiresIn);
-          return newToken;
-        }
-        return null;
-      }
-      return null;
-    } on PlatformException catch (e) {
-      print("Error ${e.code}:${e.message}");
-    }
+    final AuthCredential credential = FacebookAuthProvider.getCredential(
+      accessToken: result.accessToken.token,
+    );
+    return (await _firebaseAuth.signInWithCredential(credential)).user.uid;
   }
 }

@@ -1,0 +1,33 @@
+{
+    "nombreApp" : "easyparking",
+    "perfil" : [
+        {
+            "nombre": "Victor Manuel",
+            "apellido": "Reyes Guijarro",
+            "correo":"vmrg241096@gmail.com",
+            "placas": "F342T45",
+            "carro":"Cheroke"
+        },
+        {
+            "nombre": "Anabel",
+            "apellido": "Chavez Berumen",
+            "correo":"berumen.anabel@gmail.com",
+            "placas": "F342T45",
+            "carro":"BMW"
+        },
+        {
+            "nombre": "Victor Manuel",
+            "apellido": "Reyes Guijarro",
+            "correo":"vmrg241096@gmail.com",
+            "placas": "F342T45",
+            "carro":"Cheroke"
+        },
+        {
+            "nombre": "Victor Manuel",
+            "apellido": "Reyes Guijarro",
+            "correo":"vmrg241096@gmail.com",
+            "placas": "F342T45",
+            "carro":"Cheroke"
+        }
+    ]
+}

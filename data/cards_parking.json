@@ -1,0 +1,25 @@
+{
+    "nombreApp" : "easyparking",
+    "parkings" : [
+        {
+            "lugar": "Paza Galerias",
+            "parking": "8",
+            "image":"https://media-cdn.tripadvisor.com/media/photo-s/11/24/03/3d/galleries-mazatlan.jpg"
+        },
+        {
+            "lugar": "Soriana Santarosa",
+            "parking": "13",
+            "image":"https://lh5.googleusercontent.com/p/AF1QipMSEjkuPzh5nhDkOWHQTEbGcjND-m5j0d5ufSm9=w408-h306-k-no"
+        },
+        {
+            "lugar": "Plaza Acaya",
+            "parking": "34",
+            "image":"https://lh5.googleusercontent.com/p/AF1QipMn3JOQTkhIE78ro0J_58QRKe8Pvy2fXEo-TUNS=w426-h240-k-no"
+        },
+        {
+            "lugar": "FIMAZ UAS",
+            "parking": "18",
+            "image":"https://lh5.googleusercontent.com/p/AF1QipNDWFMT5T9krQv4NKdaZQfE5exE1XlNNpUSTTo4=w408-h306-k-no"
+        }
+    ]
+}
